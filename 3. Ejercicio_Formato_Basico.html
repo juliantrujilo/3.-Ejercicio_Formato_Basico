@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ejercicio 1: Mi Primer Inventario Organizado | SENA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --excel: #217346;
+  --excel-claro: #34A853;
+  --excel-oscuro: #185C37;
+  --sena-verde: #39a900;
+  --sena-naranja: #ff6b00;
+  --texto: #1a1a2e;
+  --texto-dim: #4a5568;
+  --texto-dimmer: #718096;
+  --bg: #f8fafc;
+  --borde: #e2e8f0;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',sans-serif; color:var(--texto); background:var(--bg); line-height:1.6; overflow-x:hidden; }
+
+/* TOPBAR */
+.topbar {
+  position:sticky; top:0; z-index:100;
+  background:rgba(255,255,255,0.96); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--borde); padding:12px 20px;
+  display:flex; align-items:center; justify-content:space-between;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05); flex-wrap:wrap; gap:10px;
+}
+.topbar-left { display:flex; align-items:center; gap:12px; }
+.sena-logo { background:var(--sena-verde); color:#fff; font-weight:900; font-size:15px; padding:6px 13px; border-radius:8px; letter-spacing:1px; }
+.topbar-brand { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; }
+.topbar-sub { font-size:11px; color:var(--texto-dimmer); margin-top:1px; }
+
+/* HERO */
+.hero {
+  background:linear-gradient(135deg,#0a1f0e 0%,#154428 40%,#217346 75%,#2a8c5a 100%);
+  padding:50px 20px 40px; text-align:center; position:relative; overflow:hidden;
+}
+.hero::before { content:''; position:absolute; width:400px; height:400px; background:var(--excel); border-radius:50%; top:-200px; left:-100px; opacity:0.15; filter:blur(80px); }
+.hero::after { content:''; position:absolute; width:300px; height:300px; background:#34A853; border-radius:50%; bottom:-150px; right:-80px; opacity:0.10; filter:blur(70px); }
+.hero-badge { 
+  display:inline-flex; align-items:center; gap:8px; background:rgba(33,115,70,0.2); 
+  border:1px solid rgba(52,168,83,0.4); color:#a8e6b8; padding:6px 16px; 
+  border-radius:30px; font-size:11px; font-weight:700; letter-spacing:2px; 
+  text-transform:uppercase; margin-bottom:16px; position:relative; z-index:1; 
+}
+.hero-icon { font-size:48px; margin-bottom:12px; position:relative; z-index:1; display:block; }
+.hero h1 { 
+  font-family:'Syne',sans-serif; font-size:clamp(28px,5vw,42px); 
+  font-weight:800; color:#fff; line-height:1.2; margin-bottom:12px; position:relative; z-index:1; 
+}
+.hero-desc { 
+  font-size:clamp(14px,2vw,16px); color:rgba(255,255,255,0.75); 
+  max-width:600px; margin:0 auto; position:relative; z-index:1; 
+}
+
+/* OBJETIVO */
+.objetivo-section {
+  background:#fff; padding:30px 20px;
+  border-bottom:3px solid var(--excel);
+}
+.objetivo-container { max-width:1000px; margin:0 auto; }
+.objetivo-tag {
+  display:inline-flex; align-items:center; gap:8px; background:rgba(33,115,70,0.08); 
+  border:1px solid rgba(33,115,70,0.2); color:var(--excel); padding:6px 16px; 
+  border-radius:20px; font-size:11px; font-weight:700; letter-spacing:2px; 
+  text-transform:uppercase; margin-bottom:12px;
+}
+.objetivo-box {
+  background:linear-gradient(135deg,rgba(33,115,70,0.05),rgba(52,168,83,0.02));
+  border:2px solid rgba(33,115,70,0.15); border-radius:16px; padding:24px;
+}
+.objetivo-box h2 {
+  font-family:'Syne',sans-serif; font-size:20px; font-weight:800; 
+  color:var(--excel); margin-bottom:10px;
+}
+.objetivo-box p { font-size:15px; color:var(--texto-dim); line-height:1.7; }
+
+/* INFO CARDS */
+.info-grid {
+  max-width:1000px; margin:30px auto; padding:0 20px;
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px;
+}
+.info-card {
+  background:#fff; border:2px solid var(--borde); border-radius:16px;
+  padding:20px; position:relative; transition:all .2s;
+}
+.info-card:hover { border-color:var(--excel); transform:translateY(-4px); box-shadow:0 8px 24px rgba(33,115,70,0.12); }
+.info-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:var(--info-color); border-radius:16px 16px 0 0; }
+.info-card h3 {
+  font-family:'Syne',sans-serif; font-size:15px; font-weight:800; 
+  color:var(--texto); margin-bottom:8px; display:flex; align-items:center; gap:8px;
+}
+.info-card .icon { font-size:24px; }
+.info-card p { font-size:14px; color:var(--texto-dim); }
+
+/* DATOS SECTION */
+.datos-section {
+  background:#fff; padding:40px 20px;
+}
+.datos-container { max-width:1100px; margin:0 auto; }
+.section-title {
+  font-family:'Syne',sans-serif; font-size:clamp(22px,4vw,32px); 
+  font-weight:800; color:var(--texto); margin-bottom:20px;
+  display:flex; align-items:center; gap:12px;
+}
+.section-title .emoji { font-size:32px; }
+.section-title span { color:var(--excel); }
+
+.table-container {
+  overflow-x:auto; border-radius:12px; 
+  box-shadow:0 4px 16px rgba(0,0,0,0.08); margin-bottom:20px;
+}
+table {
+  width:100%; border-collapse:collapse; background:#fff; font-size:13px;
+}
+th {
+  background:var(--excel); color:#fff; padding:14px 10px; 
+  text-align:center; font-weight:700; border:none; font-size:12px;
+  text-transform:uppercase; letter-spacing:0.5px;
+}
+td {
+  padding:12px 10px; border-bottom:1px solid var(--borde); text-align:center;
+}
+tr:nth-child(even) { background:#f8fafc; }
+tr:hover { background:#e8f5e9; }
+
+/* PASOS */
+.pasos-section {
+  background:var(--bg); padding:50px 20px;
+}
+.pasos-container { max-width:1000px; margin:0 auto; }
+.pasos-intro {
+  text-align:center; margin-bottom:40px;
+}
+.pasos-intro h2 {
+  font-family:'Syne',sans-serif; font-size:clamp(24px,4vw,36px); 
+  font-weight:800; color:var(--texto); margin-bottom:12px;
+}
+.pasos-intro h2 .emoji { margin-right:12px; }
+.pasos-intro p { font-size:16px; color:var(--texto-dim); }
+
+.paso {
+  background:#fff; border:2px solid var(--borde); border-radius:16px;
+  margin-bottom:24px; overflow:hidden; transition:all .2s;
+}
+.paso:hover { border-color:var(--excel); box-shadow:0 8px 24px rgba(33,115,70,0.1); }
+
+.paso-header {
+  background:linear-gradient(135deg,var(--excel),var(--excel-claro));
+  color:#fff; padding:18px 24px; display:flex; align-items:center; gap:16px;
+}
+.paso-number {
+  background:rgba(255,255,255,0.25); border-radius:50%; 
+  width:42px; height:42px; display:flex; align-items:center; 
+  justify-content:center; font-family:'Syne',sans-serif; 
+  font-size:20px; font-weight:800; flex-shrink:0;
+}
+.paso-titulo {
+  font-family:'Syne',sans-serif; font-size:18px; font-weight:800;
+}
+
+.paso-content {
+  padding:24px;
+}
+.paso-content ol {
+  list-style:none; counter-reset:item; margin:0; padding:0;
+}
+.paso-content ol li {
+  counter-increment:item; margin-bottom:16px; padding-left:40px; 
+  position:relative; font-size:15px; line-height:1.7; color:var(--texto-dim);
+}
+.paso-content ol li::before {
+  content:counter(item); position:absolute; left:0; top:0;
+  background:var(--excel); color:#fff; width:28px; height:28px;
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:13px; font-weight:700;
+}
+.paso-content ol li strong { color:var(--texto); font-weight:700; }
+
+/* TIP BOX */
+.tip-box {
+  background:linear-gradient(135deg,rgba(255,193,7,0.08),rgba(255,152,0,0.04));
+  border-left:4px solid #FFC107; border-radius:12px; padding:16px 20px;
+  margin-top:20px; display:flex; gap:12px; align-items:flex-start;
+}
+.tip-box .icon { font-size:24px; flex-shrink:0; }
+.tip-box-content h4 {
+  font-family:'Syne',sans-serif; font-size:14px; font-weight:800;
+  color:#F57C00; margin-bottom:6px;
+}
+.tip-box-content p {
+  font-size:13px; color:var(--texto-dim); line-height:1.6;
+}
+
+/* NOTA IMPORTANTE */
+.nota-importante {
+  background:linear-gradient(135deg,rgba(33,150,243,0.08),rgba(30,136,229,0.04));
+  border-left:4px solid #2196F3; border-radius:12px; padding:18px 20px;
+  margin:20px 0; display:flex; gap:12px; align-items:flex-start;
+}
+.nota-importante .icon { font-size:24px; flex-shrink:0; }
+.nota-importante-content h4 {
+  font-family:'Syne',sans-serif; font-size:14px; font-weight:800;
+  color:#1976D2; margin-bottom:8px;
+}
+.nota-importante-content p {
+  font-size:13px; color:var(--texto-dim); line-height:1.6; margin-bottom:8px;
+}
+.nota-importante-content ul {
+  margin:8px 0 0 20px; padding:0;
+}
+.nota-importante-content li {
+  font-size:13px; color:var(--texto-dim); margin-bottom:4px;
+}
+
+/* REFLEXIÓN */
+.reflexion-section {
+  background:linear-gradient(135deg,#0a1f0e 0%,#154428 40%,#217346 100%);
+  color:#fff; padding:50px 20px;
+}
+.reflexion-container { max-width:900px; margin:0 auto; }
+.reflexion-title {
+  font-family:'Syne',sans-serif; font-size:clamp(24px,4vw,32px);
+  font-weight:800; text-align:center; margin-bottom:30px;
+}
+.reflexion-title .emoji { margin-right:12px; }
+
+.pregunta {
+  background:rgba(255,255,255,0.1); border-left:4px solid rgba(255,255,255,0.3);
+  border-radius:12px; padding:20px 24px; margin-bottom:20px;
+  backdrop-filter:blur(10px); transition:all .2s;
+}
+.pregunta:hover {
+  background:rgba(255,255,255,0.15); transform:translateX(8px);
+}
+.pregunta p {
+  font-size:15px; line-height:1.7; display:flex; align-items:flex-start; gap:12px;
+}
+.pregunta p::before {
+  content:'❓'; font-size:20px; flex-shrink:0;
+}
+
+/* FOOTER */
+footer {
+  background:var(--texto); text-align:center; padding:24px;
+  font-size:12px; color:rgba(255,255,255,0.6); line-height:1.8;
+}
+footer span { color:#fff; font-weight:700; }
+
+/* REVEAL */
+.reveal { opacity:0; transform:translateY(24px); transition:opacity .5s ease,transform .5s ease; }
+.reveal.in { opacity:1; transform:translateY(0); }
+
+@media(max-width:768px){
+  .info-grid { grid-template-columns:1fr; }
+  table { font-size:11px; }
+  th, td { padding:10px 6px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <div class="topbar-left">
+    <div class="sena-logo">SENA</div>
+    <div>
+      <div class="topbar-brand">Ejercicio 1 · Formato Básico Excel</div>
+      <div class="topbar-sub">Prevención y Control Ambiental · Ficha 3410069</div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">📊 EJERCICIO 1 · NIVEL BÁSICO</div>
+  <span class="hero-icon">📋</span>
+  <h1>Mi Primer Inventario Organizado</h1>
+  <p class="hero-desc">Aplicando herramientas de formato de la pestaña INICIO de Excel</p>
+</div>
+
+<!-- OBJETIVO -->
+<div class="objetivo-section">
+  <div class="objetivo-container">
+    <div class="objetivo-tag">🎯 OBJETIVO DE APRENDIZAJE</div>
+    <div class="objetivo-box">
+      <h2>¿Qué aprenderás en este ejercicio?</h2>
+      <p>Aplicar herramientas básicas de formato de la <strong>pestaña INICIO</strong> de Excel para organizar visualmente una hoja de cálculo de inventario médico. Aprenderás a usar negrita, subrayado, colores, alineación, combinación de celdas y formato de números.</p>
+    </div>
+  </div>
+</div>
+
+<!-- INFO CARDS -->
+<div class="info-grid">
+  <div class="info-card" style="--info-color:#FF9800;">
+    <h3><span class="icon">📁</span>Archivo de trabajo</h3>
+    <p><strong>InventarioFarmacia.xlsx</strong></p>
+    <p style="font-size:12px; margin-top:8px; color:var(--texto-dimmer);">Crea este archivo nuevo en Excel</p>
+  </div>
+  <div class="info-card" style="--info-color:#9C27B0;">
+    <h3><span class="icon">⏱️</span>Duración estimada</h3>
+    <p><strong>40 minutos</strong></p>
+    <p style="font-size:12px; margin-top:8px; color:var(--texto-dimmer);">Tiempo aproximado para completar</p>
+  </div>
+  <div class="info-card" style="--info-color:#2196F3;">
+    <h3><span class="icon">📚</span>Pestaña a usar</h3>
+    <p><strong>INICIO</strong></p>
+    <p style="font-size:12px; margin-top:8px; color:var(--texto-dimmer);">Formato, fuente, alineación, números</p>
+  </div>
+</div>
+
+<!-- DATOS -->
+<div class="datos-section">
+  <div class="datos-container">
+    <h2 class="section-title">
+      <span class="emoji">📋</span>
+      Datos de <span>Inventario</span>
+    </h2>
+    <p style="font-size:15px; color:var(--texto-dim); margin-bottom:24px;">
+      Copia la siguiente tabla en tu archivo Excel. Comienza en la celda <strong>A2</strong> (deja la fila 1 vacía para el título general).
+    </p>
+    
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Insumo / Medicamento</th>
+            <th>Tipo de insumo</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Fecha de Vencimiento</th>
+            <th>Proveedor</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Paracetamol 500mg</td><td>Medicamento</td><td>50</td><td>350</td><td>30/05/2026</td><td>Farmacéutica Andina</td><td>17500</td></tr>
+          <tr><td>Guantes de látex</td><td>Material médico</td><td>200</td><td>500</td><td>15/01/2027</td><td>MedSupply Ltda.</td><td>100000</td></tr>
+          <tr><td>Jeringa 5ml</td><td>Material médico</td><td>150</td><td>400</td><td>01/12/2028</td><td>Hospital Supply Co.</td><td>60000</td></tr>
+          <tr><td>Gasas estériles</td><td>Material médico</td><td>100</td><td>250</td><td>10/08/2026</td><td>Salud y Vida S.A.</td><td>25000</td></tr>
+          <tr><td>Alcohol antiséptico 70%</td><td>Antiséptico</td><td>80</td><td>1200</td><td>25/06/2027</td><td>BioClean</td><td>96000</td></tr>
+          <tr><td>Ibuprofeno 400mg</td><td>Medicamento</td><td>40</td><td>500</td><td>05/11/2025</td><td>Farmacéutica Andina</td><td>20000</td></tr>
+          <tr><td>Termómetro digital</td><td>Equipo médico</td><td>10</td><td>15000</td><td>01/01/2030</td><td>TecnoSalud</td><td>150000</td></tr>
+          <tr><td>Suero fisiológico 0.9%</td><td>Solución</td><td>60</td><td>800</td><td>14/02/2026</td><td>Laboratorios Vida</td><td>48000</td></tr>
+          <tr><td>Mascarilla N95</td><td>Protección personal</td><td>300</td><td>2500</td><td>20/09/2029</td><td>SafeAir Ltda.</td><td>750000</td></tr>
+          <tr><td>Clorhexidina 2%</td><td>Antiséptico</td><td>25</td><td>1800</td><td>12/12/2026</td><td>BioClean</td><td>45000</td></tr>
+          <tr><td>Amoxicilina 500mg</td><td>Medicamento</td><td>45</td><td>450</td><td>30/10/2025</td><td>Medicamentos del Sur</td><td>20250</td></tr>
+          <tr><td>Tensiómetro manual</td><td>Equipo médico</td><td>8</td><td>90000</td><td>01/05/2032</td><td>Salud Global</td><td>720000</td></tr>
+          <tr><td>Sonda nasogástrica</td><td>Material médico</td><td>30</td><td>1200</td><td>15/03/2027</td><td>MedSupply Ltda.</td><td>36000</td></tr>
+          <tr><td>Kit de sutura</td><td>Material médico</td><td>20</td><td>7000</td><td>05/09/2026</td><td>Hospital Supply Co.</td><td>140000</td></tr>
+          <tr><td>Desinfectante hospitalario</td><td>Antiséptico</td><td>15</td><td>3500</td><td>14/07/2028</td><td>BioClean</td><td>52500</td></tr>
+          <tr><td>Lidocaína 2%</td><td>Medicamento</td><td>35</td><td>2000</td><td>01/12/2025</td><td>Laboratorios Vida</td><td>70000</td></tr>
+          <tr><td>Bata quirúrgica estéril</td><td>Protección personal</td><td>50</td><td>8000</td><td>22/11/2027</td><td>SafeAir Ltda.</td><td>400000</td></tr>
+          <tr><td>Guantes de nitrilo</td><td>Material médico</td><td>180</td><td>650</td><td>30/04/2028</td><td>MedSupply Ltda.</td><td>117000</td></tr>
+          <tr><td>Oxímetro de pulso</td><td>Equipo médico</td><td>12</td><td>45000</td><td>10/06/2031</td><td>TecnoSalud</td><td>540000</td></tr>
+          <tr><td>Cinta microporosa</td><td>Material médico</td><td>100</td><td>300</td><td>25/08/2027</td><td>Salud y Vida S.A.</td><td>30000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tip-box">
+      <span class="icon">💡</span>
+      <div class="tip-box-content">
+        <h4>TIP IMPORTANTE</h4>
+        <p>Recuerda dejar la <strong>fila 1 vacía</strong>. Los encabezados de la tabla deben ir en la <strong>fila 2</strong>. La fila 1 la usaremos más adelante para el título general.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PASOS -->
+<div class="pasos-section">
+  <div class="pasos-container">
+    <div class="pasos-intro">
+      <h2><span class="emoji">⚡</span>Actividad Paso a Paso</h2>
+      <p>Sigue estos pasos cuidadosamente. Lee cada instrucción antes de ejecutarla en Excel.</p>
+    </div>
+
+    <!-- PASO 1 -->
+    <div class="paso reveal">
+      <div class="paso-header">
+        <div class="paso-number">1</div>
+        <div class="paso-titulo">Dar formato a los títulos de columna</div>
+      </div>
+      <div class="paso-content">
+        <ol>
+          <li>
+            <strong>Selecciona el rango A2:G2</strong><br>
+            Haz clic en la celda A2 y arrastra hasta G2, o haz clic en A2 y presiona <code>Shift + →</code> hasta llegar a G2.
+          </li>
+          <li>
+            <strong>Aplica Negrita</strong><br>
+            Ve a la pestaña INICIO → grupo Fuente → haz clic en el botón <strong>N</strong> (Negrita), o presiona <code>Ctrl + N</code>.
+          </li>
+          <li>
+            <strong>Aplica Subrayado</strong><br>
+            En el mismo grupo Fuente, haz clic en el botón <strong>S</strong> (Subrayado), o presiona <code>Ctrl + S</code>.
+          </li>
+          <li>
+            <strong>Cambia el color de fuente</strong><br>
+            Haz clic en la flecha junto al botón "Color de fuente" (A con barra de color) → selecciona <strong>Azul oscuro</strong>.
+          </li>
+          <li>
+            <strong>Aplica color de relleno</strong><br>
+            Haz clic en la flecha junto al botón "Color de relleno" (balde de pintura) → selecciona <strong>Amarillo claro</strong>.
+          </li>
+        </ol>
+
+        <div class="tip-box">
+          <span class="icon">💡</span>
+          <div class="tip-box-content">
+            <h4>Atajos de teclado útiles</h4>
+            <p><strong>Ctrl + N</strong> = Negrita | <strong>Ctrl + S</strong> = Subrayado | <strong>Ctrl + K</strong> = Cursiva</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 2 -->
+    <div class="paso reveal">
+      <div class="paso-header">
+        <div class="paso-number">2</div>
+        <div class="paso-titulo">Alinear el contenido de las columnas</div>
+      </div>
+      <div class="paso-content">
+        <ol>
+          <li>
+            <strong>Alinear columna A (Insumo/Medicamento) a la izquierda</strong><br>
+            Selecciona toda la columna A haciendo clic en la letra "A" → ve a INICIO → grupo Alineación → haz clic en "Alinear a la izquierda".
+          </li>
+          <li>
+            <strong>Alinear columna B (Tipo de insumo) al centro</strong><br>
+            Selecciona la columna B → haz clic en "Centrar" en el grupo Alineación.
+          </li>
+          <li>
+            <strong>Alinear columnas C, D y G a la derecha</strong><br>
+            Selecciona las columnas C (Cantidad), D (Precio Unitario) y G (Total) manteniendo presionado <code>Ctrl</code> mientras haces clic en cada letra de columna → haz clic en "Alinear a la derecha".
+          </li>
+        </ol>
+
+        <div class="nota-importante">
+          <span class="icon">ℹ️</span>
+          <div class="nota-importante-content">
+            <h4>¿Por qué alineamos así?</h4>
+            <p>Seguimos estándares de presentación de datos:</p>
+            <ul>
+              <li><strong>Texto descriptivo</strong> (nombres, categorías) → Izquierda</li>
+              <li><strong>Categorías cortas</strong> → Centro</li>
+              <li><strong>Números</strong> → Derecha (facilita comparación visual)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 3 -->
+    <div class="paso reveal">
+      <div class="paso-header">
+        <div class="paso-number">3</div>
+        <div class="paso-titulo">Crear título general con combinación de celdas</div>
+      </div>
+      <div class="paso-content">
+        <ol>
+          <li>
+            <strong>Haz clic en la celda A1</strong><br>
+            Esta celda debe estar vacía (es la que dejamos libre al inicio).
+          </li>
+          <li>
+            <strong>Escribe el título</strong><br>
+            Escribe: <strong>Inventario de Insumos Médicos y Medicamentos</strong>
+          </li>
+          <li>
+            <strong>Selecciona el rango A1:G1</strong><br>
+            Desde A1 hasta G1 (toda la fila de título sobre las columnas).
+          </li>
+          <li>
+            <strong>Combina y centra</strong><br>
+            Ve a INICIO → grupo Alineación → haz clic en "Combinar y centrar". El título ahora ocupa todo el ancho de la tabla.
+          </li>
+          <li>
+            <strong>Da formato al título</strong><br>
+            Con el rango A1:G1 aún seleccionado:
+            <ul style="margin-top:8px;">
+              <li>Cambia la fuente a <strong>Calibri</strong></li>
+              <li>Aumenta el tamaño a <strong>14 puntos</strong></li>
+              <li>Aplica <strong>Negrita</strong></li>
+            </ul>
+          </li>
+        </ol>
+
+        <div class="tip-box">
+          <span class="icon">💡</span>
+          <div class="tip-box-content">
+            <h4>Combinar celdas</h4>
+            <p>Al combinar celdas, solo se conserva el contenido de la celda superior izquierda. Asegúrate de escribir el texto antes de combinar, o escríbelo en A1.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 4 -->
+    <div class="paso reveal">
+      <div class="paso-header">
+        <div class="paso-number">4</div>
+        <div class="paso-titulo">Aplicar formato de moneda a los números</div>
+      </div>
+      <div class="paso-content">
+        <ol>
+          <li>
+            <strong>Selecciona la columna D (Precio Unitario)</strong><br>
+            Haz clic en la letra "D" para seleccionar toda la columna.
+          </li>
+          <li>
+            <strong>Mantén presionado Ctrl y selecciona la columna G (Total)</strong><br>
+            Esto te permite seleccionar ambas columnas a la vez.
+          </li>
+          <li>
+            <strong>Aplica formato de moneda</strong><br>
+            Ve a INICIO → grupo Número → haz clic en el símbolo <strong>$</strong> (Formato de moneda), o en el menú desplegable de "Formato de número" selecciona <strong>Moneda</strong>.
+          </li>
+        </ol>
+
+        <div class="nota-importante">
+          <span class="icon">ℹ️</span>
+          <div class="nota-importante-content">
+            <h4>Sobre el formato de moneda en Excel</h4>
+            <p>El formato de moneda puede variar según la configuración regional de tu Excel:</p>
+            <ul>
+              <li><strong>Colombia:</strong> $ 17.500 (punto como separador de miles)</li>
+              <li><strong>Otros países:</strong> $17,500 o 17.500,00</li>
+            </ul>
+            <p style="margin-top:8px;">Si tu Excel muestra el formato diferente, está bien. Lo importante es que los números se vean como valores monetarios.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 5 -->
+    <div class="paso reveal">
+      <div class="paso-header">
+        <div class="paso-number">5</div>
+        <div class="paso-titulo">Guardar el archivo con los cambios</div>
+      </div>
+      <div class="paso-content">
+        <ol>
+          <li>
+            <strong>Presiona Ctrl + G</strong> o ve a Archivo → Guardar como
+          </li>
+          <li>
+            <strong>Nombre del archivo:</strong> <code>InventarioFarmacia_Formateado.xlsx</code>
+          </li>
+          <li>
+            <strong>Ubicación:</strong> Guárdalo en la carpeta de tu curso o en Documentos
+          </li>
+          <li>
+            <strong>Formato:</strong> Asegúrate de guardar como "Libro de Excel (.xlsx)"
+          </li>
+        </ol>
+
+        <div class="tip-box">
+          <span class="icon">💾</span>
+          <div class="tip-box-content">
+            <h4>Guarda frecuentemente</h4>
+            <p>Presiona <strong>Ctrl + G</strong> cada vez que completes un paso importante. Esto evita perder tu trabajo si Excel se cierra inesperadamente.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- REFLEXIÓN -->
+<div class="reflexion-section">
+  <div class="reflexion-container">
+    <h2 class="reflexion-title"><span class="emoji">💭</span>Preguntas de Reflexión</h2>
+    
+    <div class="pregunta">
+      <p>¿Qué herramienta de formato te pareció más útil para presentar mejor la información del inventario?</p>
+    </div>
+    
+    <div class="pregunta">
+      <p>¿Crees que el uso de colores, fuentes y alineación mejora la comprensión de los datos? ¿Por qué?</p>
+    </div>
+    
+    <div class="pregunta">
+      <p>¿Cómo podrías usar este tipo de formato en un hospital, farmacia o consultorio real? Da un ejemplo específico.</p>
+    </div>
+
+    <div class="pregunta">
+      <p>Si tuvieras que presentar este inventario a tu jefe o supervisor, ¿qué otros elementos de formato agregarías?</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>📊 <span>Ejercicio 1 - Formato Básico en Excel</span> | Inventario Médico</p>
+  <p>Centro Agroempresarial y Desarrollo Pecuario del Huila · <span>SENA</span></p>
+  <p>Instructor: <span>Julián Andrés Trujillo Morales</span> · Ficha <span>3410069</span></p>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target); } });
+  }, { threshold:0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
